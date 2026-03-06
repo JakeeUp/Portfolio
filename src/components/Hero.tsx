@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import * as THREE from "three";
-import { FaLinkedin } from "react-icons/fa";
+import { FaLinkedin, FaGithub } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 
 export default function Hero() {
@@ -227,36 +227,51 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.0 }}
-          className="flex flex-col sm:flex-row gap-4 items-center"
+          className="flex flex-col items-center gap-4"
         >
+          {/* Top row — 3 outline buttons */}
+          <div className="flex flex-wrap justify-center gap-3">
+            <a
+              href="/resume.pdf"
+              download
+              className="flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold tracking-wide text-white border border-white/20 hover:border-[#00d4ff]/60 hover:text-[#00d4ff] transition-all duration-300"
+              style={{ backdropFilter: "blur(8px)" }}
+            >
+              <FiDownload />
+              Download Resume
+            </a>
+            <a
+              href="https://linkedin.com/in/JacobFernandezProgrammer"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold tracking-wide text-white border border-white/20 hover:border-[#0a66c2] hover:text-[#0a66c2] transition-all duration-300"
+              style={{ backdropFilter: "blur(8px)" }}
+            >
+              <FaLinkedin />
+              LinkedIn
+            </a>
+            <a
+              href="https://github.com/JakeeUp"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold tracking-wide text-white border border-white/20 hover:border-white/60 hover:text-white transition-all duration-300"
+              style={{ backdropFilter: "blur(8px)" }}
+            >
+              <FaGithub />
+              GitHub
+            </a>
+          </div>
+
+          {/* Bottom row — View Projects CTA */}
           <a
             href="#projects"
-            className="px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide text-black transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+            className="px-10 py-3.5 rounded-full text-sm font-semibold tracking-wide text-black transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
             style={{
               background: "linear-gradient(135deg, #00d4ff 0%, #0066ff 100%)",
               boxShadow: "0 0 30px rgba(0,212,255,0.3)",
             }}
           >
             View Projects
-          </a>
-          <a
-            href="/resume.pdf"
-            download
-            className="flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide text-white border border-white/20 hover:border-[#00d4ff]/60 hover:text-[#00d4ff] transition-all duration-300"
-            style={{ backdropFilter: "blur(8px)" }}
-          >
-            <FiDownload />
-            Download Resume
-          </a>
-          <a
-            href="https://linkedin.com/in/JacobFernandezProgrammer"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide text-white border border-white/20 hover:border-[#0a66c2] hover:text-[#0a66c2] transition-all duration-300"
-            style={{ backdropFilter: "blur(8px)" }}
-          >
-            <FaLinkedin />
-            LinkedIn
           </a>
         </motion.div>
 
