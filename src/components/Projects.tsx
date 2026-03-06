@@ -76,7 +76,7 @@ export default function Projects() {
           viewport={{ once: true }}
           className="text-[#00d4ff] text-[11px] font-mono tracking-[0.4em] uppercase mb-3"
         >
-          03 / Projects
+          04 / Projects
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}

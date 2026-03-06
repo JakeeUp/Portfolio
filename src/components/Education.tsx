@@ -142,7 +142,7 @@ export default function Education() {
                 </p>
               </div>
               <span className="px-3 py-1 rounded-full text-xs font-mono text-[#10b981] border border-[#10b981]/25 bg-[#10b981]/[0.08] mt-1 whitespace-nowrap flex-shrink-0">
-                In Progress
+                Expected 2026
               </span>
             </div>
 

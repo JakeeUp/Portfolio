@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { SiVimeo } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
@@ -12,9 +13,32 @@ const LINKEDIN_VIDEO_URL = "https://www.linkedin.com/in/jacobfernandezprogrammer
 // Vimeo video ID — update if you re-upload to a new URL
 const VIMEO_VIDEO_ID = "1078568958";
 
+const VIMEO_BASE = `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?title=0&byline=0&portrait=0&color=00d4ff`;
+const VIMEO_AUTOPLAY = `${VIMEO_BASE}&autoplay=1&muted=1`;
+
 export default function Reel() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [src, setSrc] = useState(VIMEO_BASE);
+
+  // Autoplay when the section scrolls into view
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSrc(VIMEO_AUTOPLAY);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="reel" className="py-32 px-6">
+    <section id="reel" ref={sectionRef} className="py-32 px-6">
       <div className="max-w-7xl mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -22,7 +46,7 @@ export default function Reel() {
           viewport={{ once: true }}
           className="text-[#00d4ff] text-[11px] font-mono tracking-[0.4em] uppercase mb-3"
         >
-          06 / Reel &amp; Media
+          05 / Reel &amp; Media
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -56,7 +80,7 @@ export default function Reel() {
             style={{ aspectRatio: "16/9" }}
           >
             <iframe
-              src={`https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?title=0&byline=0&portrait=0&color=00d4ff`}
+              src={src}
               className="absolute inset-0 w-full h-full"
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"

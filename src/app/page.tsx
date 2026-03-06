@@ -21,11 +21,11 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About />
+      <Experience />
       <Skills />
       <Projects />
-      <GitHubSection />
-      <Experience />
       <Reel />
+      <GitHubSection />
       <Education />
       <Contact />
       <Footer />

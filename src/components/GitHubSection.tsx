@@ -56,7 +56,7 @@ export default function GitHubSection() {
           viewport={{ once: true }}
           className="text-[#00d4ff] text-[11px] font-mono tracking-[0.4em] uppercase mb-3"
         >
-          04 / GitHub
+          06 / GitHub
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
