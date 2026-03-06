@@ -66,7 +66,7 @@ const codeLines = [
   },
   {
     tokens: [
-      { text: '    "Gameplay Systems"', cls: "text-[#ce9178]" },
+      { text: '    "Gameplay Mechanics"', cls: "text-[#ce9178]" },
       { text: ",", cls: "text-[#d4d4d4]" },
     ],
   },
