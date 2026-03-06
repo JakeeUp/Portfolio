@@ -74,7 +74,7 @@ const codeLines = [
     tokens: [
       { text: '    "AI Programming"', cls: "text-[#ce9178]" },
       { text: ", ", cls: "text-[#d4d4d4]" },
-      { text: '"API Dev"', cls: "text-[#ce9178]" },
+      { text: '"REST APIs"', cls: "text-[#ce9178]" },
     ],
   },
   { tokens: [{ text: "  };", cls: "text-[#d4d4d4]" }] },
