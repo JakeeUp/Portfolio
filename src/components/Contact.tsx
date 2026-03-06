@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { FiMail, FiMapPin } from "react-icons/fi";
-import { FaLinkedin } from "react-icons/fa";
+import { FaLinkedin, FaGithub } from "react-icons/fa";
 import type { IconType } from "react-icons";
 
 interface ContactItem {
@@ -26,6 +26,13 @@ const contacts: ContactItem[] = [
     label: "LinkedIn",
     value: "JacobFernandezProgrammer",
     href: "https://linkedin.com/in/JacobFernandezProgrammer",
+    external: true,
+  },
+  {
+    icon: FaGithub,
+    label: "GitHub",
+    value: "JakeeUp",
+    href: "https://github.com/JakeeUp",
     external: true,
   },
   {
