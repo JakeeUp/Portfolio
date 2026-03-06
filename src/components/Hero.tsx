@@ -232,15 +232,6 @@ export default function Hero() {
           {/* Top row — 3 outline buttons */}
           <div className="flex flex-wrap justify-center gap-3">
             <a
-              href="/resume.pdf"
-              download
-              className="flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold tracking-wide text-white border border-white/20 hover:border-[#00d4ff]/60 hover:text-[#00d4ff] transition-all duration-300"
-              style={{ backdropFilter: "blur(8px)" }}
-            >
-              <FiDownload />
-              Download Resume
-            </a>
-            <a
               href="https://linkedin.com/in/JacobFernandezProgrammer"
               target="_blank"
               rel="noopener noreferrer"
@@ -249,6 +240,15 @@ export default function Hero() {
             >
               <FaLinkedin />
               LinkedIn
+            </a>
+            <a
+              href="/resume.pdf"
+              download
+              className="flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold tracking-wide text-white border border-white/20 hover:border-[#00d4ff]/60 hover:text-[#00d4ff] transition-all duration-300"
+              style={{ backdropFilter: "blur(8px)" }}
+            >
+              <FiDownload />
+              Download Resume
             </a>
             <a
               href="https://github.com/JakeeUp"
