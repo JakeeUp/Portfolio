@@ -80,6 +80,7 @@ export default function GitHubSection() {
           >
             {/* Avatar */}
             <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`https://github.com/${GITHUB_USERNAME}.png`}
                 alt="Jacob Fernandez GitHub avatar"

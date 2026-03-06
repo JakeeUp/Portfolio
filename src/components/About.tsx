@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 const stats = [
   { value: "5+", label: "Years Programming" },
@@ -102,7 +102,7 @@ const codeLines = [
   { tokens: [{ text: "};", cls: "text-[#d4d4d4]" }] },
 ];
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
     opacity: 1,
