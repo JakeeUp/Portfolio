@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
+import { FiMail, FiMapPin } from "react-icons/fi";
 import { FaLinkedin } from "react-icons/fa";
 import type { IconType } from "react-icons";
 
@@ -20,12 +20,7 @@ const contacts: ContactItem[] = [
     value: "Jacobfernandez0607@yahoo.com",
     href: "mailto:Jacobfernandez0607@yahoo.com",
   },
-  {
-    icon: FiPhone,
-    label: "Phone",
-    value: "(210) 995-1068",
-    href: "tel:2109951068",
-  },
+
   {
     icon: FaLinkedin,
     label: "LinkedIn",
