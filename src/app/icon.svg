@@ -1,0 +1,21 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="6" fill="#04040f"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#0066ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Top arc -->
+  <path d="M 3 9 Q 16 4 29 9" stroke="url(#g)" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+  <!-- J stem -->
+  <line x1="10" y1="9" x2="10" y2="20" stroke="url(#g)" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- J curl -->
+  <path d="M 10 20 Q 10 27 5 27 Q 2 27 2 24" stroke="url(#g)" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+  <!-- F stem -->
+  <line x1="23" y1="9" x2="23" y2="28" stroke="url(#g)" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- F top bar -->
+  <line x1="23" y1="9" x2="30" y2="9" stroke="url(#g)" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- F middle crossbar -->
+  <line x1="23" y1="18" x2="30" y2="18" stroke="url(#g)" stroke-width="2.8" stroke-linecap="round"/>
+</svg>
