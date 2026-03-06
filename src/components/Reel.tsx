@@ -13,7 +13,7 @@ const LINKEDIN_VIDEO_URL = "https://www.linkedin.com/in/jacobfernandezprogrammer
 // Vimeo video ID — update if you re-upload to a new URL
 const VIMEO_VIDEO_ID = "1078568958";
 
-const VIMEO_BASE = `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?title=0&byline=0&portrait=0&color=00d4ff`;
+const VIMEO_BASE = `https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?title=0&byline=0&portrait=0&color=00d4ff&quality=1080p`;
 const VIMEO_AUTOPLAY = `${VIMEO_BASE}&autoplay=1&muted=1`;
 
 export default function Reel() {
