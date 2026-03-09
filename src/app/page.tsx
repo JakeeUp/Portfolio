@@ -11,6 +11,7 @@ import Reel from "@/components/Reel";
 import Education from "@/components/Education";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import GradientOrbs from "@/components/GradientOrbs";
 
 // Hero uses Three.js which requires a browser — disable SSR
 const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
@@ -18,6 +19,7 @@ const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
 export default function Home() {
   return (
     <main className="bg-[#04040f] text-white overflow-x-hidden">
+      <GradientOrbs />
       <Navbar />
       <Hero />
       <About />
