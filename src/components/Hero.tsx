@@ -14,9 +14,9 @@ export default function Hero() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // ─── Scene ───────────────────────────────────────────────
+    // ─── Scene ────────────────────────────────────────────────
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x04040f, 0.022);
+    scene.fog = new THREE.FogExp2(0x04040f, 0.015);
 
     // ─── Camera ───────────────────────────────────────────────
     const camera = new THREE.PerspectiveCamera(
@@ -25,7 +25,7 @@ export default function Hero() {
       0.1,
       100
     );
-    camera.position.set(0, 2, 9);
+    camera.position.set(0, 1.5, 10);
 
     // ─── Renderer ────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -33,77 +33,179 @@ export default function Hero() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x04040f);
 
-    // ─── Main wireframe: Torus Knot ──────────────────────────
-    const torusGeo = new THREE.TorusKnotGeometry(2, 0.45, 180, 20);
-    const torusMat = new THREE.MeshBasicMaterial({
-      color: 0x00d4ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.38,
-    });
-    const torus = new THREE.Mesh(torusGeo, torusMat);
-    scene.add(torus);
+    // Track for cleanup
+    const geos: THREE.BufferGeometry[] = [];
+    const mats: THREE.Material[] = [];
 
-    // ─── Outer shell: Icosahedron ────────────────────────────
-    const outerGeo = new THREE.IcosahedronGeometry(4.5, 2);
-    const outerMat = new THREE.MeshBasicMaterial({
-      color: 0x0055ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.05,
-    });
-    const outer = new THREE.Mesh(outerGeo, outerMat);
-    scene.add(outer);
+    // ─────────────────────────────────────────────────────────
+    // CODE PARTICLE MÖBIUS STRIP
+    // Snippets from Jacob's C++/C#/Python/TS projects orbit a
+    // Möbius strip and scatter when the mouse gets close.
+    // ─────────────────────────────────────────────────────────
 
-    // ─── Inner ring: Octahedron accent ───────────────────────
-    const ringGeo = new THREE.OctahedronGeometry(1.2, 1);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x7c3aed,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.2,
+    // Real tokens from Jacob's C#/C++/JS/TS projects
+    const CODE_TOKENS = [
+      // Unity C# — PlayerController
+      'Rigidbody', 'Vector3', 'Quaternion', '[Header]', 'moveSpeed',
+      'Slerp', 'FixedUpdate', 'Physics.Raycast', 'transform',
+      'GetComponent', 'MonoBehaviour', '[SerializeField]', 'rb.AddForce',
+      'InputValue', 'OnMove()', 'jumpForce', 'isGrounded', 'Start()', 'Update()',
+      'transform.position', 'transform.rotation', 'Vector3.zero', 'Vector3.up',
+      'Mathf.Lerp', 'Mathf.Clamp', 'Time.deltaTime', 'Time.time',
+      'gameObject', 'SetActive()', 'Destroy()', 'Instantiate()',
+      'Camera.main', 'LayerMask', 'CompareTag()', 'OnCollisionEnter',
+      // Unity C# — AIController
+      'NavMeshAgent', 'NavMesh', 'animator.Play', 'CrossFade',
+      'AIPhase', 'IShootable', 'OverlapSphere', 'SetDestination',
+      'agent.isStopped', 'RaycastHit', 'Random.Range', 'StartCoroutine',
+      'animator.SetBool', 'animator.SetFloat', 'animator.SetTrigger',
+      'WaitForSeconds', 'yield return', 'Coroutine', 'Physics.OverlapSphere',
+      'NavMesh.SamplePosition', 'agent.speed', 'agent.stoppingDistance',
+      // C++ — general + LeetCode
+      'ListNode*', 'new ListNode', 'carry/10', 'while(l1||l2)',
+      'nullptr', 'result->next', 'int carry', 'l1->next',
+      '#include', 'template', 'auto', 'struct', '->',
+      'std::vector', 'std::string', 'std::map', 'std::shared_ptr',
+      'std::unique_ptr', 'std::make_shared', 'std::sort', 'std::cout',
+      'std::unordered_map', 'std::pair', 'size_t', 'const&',
+      'int main()', 'return 0;', 'namespace', 'using namespace std',
+      'stack<int>', 'queue<int>', 'int nums[]', 'for(auto&',
+      // C# — zigzag + general
+      'StringBuilder', 'List<>', 'foreach', 'numRows',
+      'direction *= -1', 'sb.Append', 'new List',
+      'Dictionary<>', 'HashSet<>', 'LINQ', '.Where()', '.Select()',
+      'string[]', 'int[]', 'var ', 'private', 'protected', 'static',
+      'readonly', '[RequireComponent]', 'ScriptableObject',
+      // JS — CS:GO app + site
+      'async function', 'await fetch', 'classList', 'querySelectorAll',
+      'JSON.stringify', 'renderResults', 'catch (e)', 'const API',
+      'document.getElementById', 'addEventListener', 'removeEventListener',
+      'Promise<>', '.then()', '.catch()', 'Array.from()', 'map()',
+      'filter()', 'reduce()', 'Object.keys()', 'localStorage',
+      // TypeScript / React
+      'useState', 'useEffect', 'useRef', 'useCallback', 'useMemo',
+      'React.FC', 'interface', 'export default', 'import type',
+      'type Props', 'onClick', 'onChange', 'className', 'children',
+      // General keywords + operators
+      'void', 'class', '::', 'override', 'virtual', 'public',
+      'const', '=>', 'export', 'async', 'await', 'null',
+      '{ }', '&&', '||', '!=', '++', '--', '//', '===',
+      'return', 'switch', 'case', 'break', 'continue', 'throw',
+      'try { }', 'catch', 'finally', 'new', 'this', 'super',
+    ];
+
+    // One canvas texture per unique token — reused across particles
+    const tokenTexMap = new Map<string, THREE.Texture>();
+    const tokenTexList: THREE.Texture[] = [];
+
+    CODE_TOKENS.forEach((tok) => {
+      if (tokenTexMap.has(tok)) return;
+      const cv = document.createElement('canvas');
+      cv.width = 256; cv.height = 64;
+      const ctx2 = cv.getContext('2d')!;
+      ctx2.clearRect(0, 0, 256, 64);
+      // Vary between bright cyan and softer blue-purple
+      const col = Math.random() > 0.55 ? '#00d4ff' : Math.random() > 0.5 ? '#4499ff' : '#aa88ff';
+      // Subtle dark bg so text is legible against bright scene
+      ctx2.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx2.roundRect(4, 8, 248, 48, 6);
+      ctx2.fill();
+      ctx2.font = 'bold 26px monospace';
+      ctx2.fillStyle = col;
+      ctx2.shadowColor = col;
+      ctx2.shadowBlur = 10;
+      ctx2.textAlign = 'center';
+      ctx2.textBaseline = 'middle';
+      ctx2.fillText(tok, 128, 32);
+      const tex = new THREE.CanvasTexture(cv);
+      tokenTexMap.set(tok, tex);
+      tokenTexList.push(tex);
     });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    scene.add(ring);
+
+    // Möbius strip in XY plane, centered in scene
+    const MB_CX = 0.0, MB_CY = 0.0, MB_R = 3.6, MB_W = 1.2;
+
+    function mobiusHome(t: number, s: number): THREE.Vector3 {
+      // Ring lies in XY plane — faces the camera nicely
+      const x = (MB_R + s * Math.cos(t / 2)) * Math.cos(t) + MB_CX;
+      const y = (MB_R + s * Math.cos(t / 2)) * Math.sin(t) + MB_CY;
+      const z = s * Math.sin(t / 2);
+      return new THREE.Vector3(x, y, z);
+    }
+
+    // Group so we can spin the whole strip
+    const mobiusGroup = new THREE.Group();
+    scene.add(mobiusGroup);
+
+    // Particle arrays
+    const cpSprites: THREE.Sprite[] = [];
+    const cpSpriteMats: THREE.SpriteMaterial[] = [];
+    const cpVelX: number[] = [], cpVelY: number[] = [], cpVelZ: number[] = [];
+    const cpT: number[] = [], cpS: number[] = [], cpTSpeed: number[] = [];
+    const CP_COUNT = 500;
+
+    for (let i = 0; i < CP_COUNT; i++) {
+      const tParam = (i / CP_COUNT) * Math.PI * 2;
+      const sParam = (Math.random() - 0.5) * MB_W * 2;
+      const tok = CODE_TOKENS[i % CODE_TOKENS.length];
+      const tex = tokenTexMap.get(tok)!;
+
+      const spMat = new THREE.SpriteMaterial({
+        map: tex,
+        transparent: true,
+        opacity: 0.72 + Math.random() * 0.28,
+        depthWrite: false,
+      });
+      cpSpriteMats.push(spMat);
+
+      const sp = new THREE.Sprite(spMat);
+      sp.scale.set(1.5, 0.40, 1);
+      sp.position.copy(mobiusHome(tParam, sParam));
+      mobiusGroup.add(sp);
+
+      cpSprites.push(sp);
+      cpVelX.push(0); cpVelY.push(0); cpVelZ.push(0);
+      cpT.push(tParam);
+      cpS.push(sParam);
+      cpTSpeed.push(0.7 + Math.random() * 0.6);
+    }
 
     // ─── Ground grid ─────────────────────────────────────────
     const grid = new THREE.GridHelper(60, 60, 0x0a1a30, 0x05101e);
-    grid.position.y = -4;
+    grid.position.y = -2.8;
     scene.add(grid);
 
     // ─── Particles ───────────────────────────────────────────
-    const count = 1800;
-    const positions = new Float32Array(count * 3);
+    const count = 1600;
+    const pPositions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const r = 7 + Math.random() * 20;
+      const r = 8 + Math.random() * 18;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = r * Math.cos(phi);
+      pPositions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+      pPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      pPositions[i * 3 + 2] = r * Math.cos(phi);
     }
     const particleGeo = new THREE.BufferGeometry();
-    particleGeo.setAttribute(
-      "position",
-      new THREE.BufferAttribute(positions, 3)
-    );
+    particleGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
+    geos.push(particleGeo);
     const particleMat = new THREE.PointsMaterial({
       color: 0x00aaff,
       size: 0.035,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.4,
     });
+    mats.push(particleMat);
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // ─── Mouse tracking ──────────────────────────────────────
+    // ─── Mouse / Touch tracking ───────────────────────────────
     const onMouseMove = (e: MouseEvent) => {
       mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
       mouseRef.current.y = -(e.clientY / window.innerHeight - 0.5) * 1.5;
     };
     window.addEventListener("mousemove", onMouseMove, { passive: true });
 
-    // ─── Touch tracking (mobile) ─────────────────────────────
     const onTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
       mouseRef.current.x = (touch.clientX / window.innerWidth - 0.5) * 2;
@@ -120,7 +222,7 @@ export default function Hero() {
     };
     window.addEventListener("resize", onResize, { passive: true });
 
-    // ─── Animation loop ──────────────────────────────────────
+    // ─── Animation loop ───────────────────────────────────────
     let raf: number;
     const camTarget = { x: 0, y: 0 };
     const clock = new THREE.Clock();
@@ -129,19 +231,54 @@ export default function Hero() {
       raf = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
-      torus.rotation.x = t * 0.12;
-      torus.rotation.y = t * 0.19;
-      outer.rotation.x = t * -0.04;
-      outer.rotation.y = t * 0.07;
-      ring.rotation.x = t * 0.3;
-      ring.rotation.z = t * 0.2;
-      particles.rotation.y = t * 0.015;
+      particles.rotation.y = t * 0.012;
 
-      // Smooth camera follow mouse
-      camTarget.x += (mouseRef.current.x * 0.9 - camTarget.x) * 0.05;
-      camTarget.y += (mouseRef.current.y * 0.4 - camTarget.y) * 0.05;
+      // Code particles — orbit Möbius strip, scatter on mouse hover
+      // Approximate mouse position in world space at z≈0
+      const mwx = mouseRef.current.x * 6.5;
+      const mwy = mouseRef.current.y * 3.5;
+      const REPEL_RADIUS = 2.2;
+      const SPRING = 0.032;
+      const DAMPING = 0.87;
+      const ORBIT_SPEED = 0.0018;
+
+      for (let i = 0; i < CP_COUNT; i++) {
+        // Advance t along the strip (continuous orbit)
+        cpT[i] += ORBIT_SPEED * cpTSpeed[i];
+
+        // Compute current home target on the moving strip
+        const home = mobiusHome(cpT[i], cpS[i]);
+        const sp = cpSprites[i];
+
+        // Spring toward home
+        cpVelX[i] += (home.x - sp.position.x) * SPRING;
+        cpVelY[i] += (home.y - sp.position.y) * SPRING;
+        cpVelZ[i] += (home.z - sp.position.z) * SPRING;
+
+        // Mouse repulsion
+        const dx = sp.position.x - mwx;
+        const dy = sp.position.y - mwy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < REPEL_RADIUS && dist > 0.01) {
+          const strength = ((REPEL_RADIUS - dist) / REPEL_RADIUS) * 0.45;
+          cpVelX[i] += (dx / dist) * strength;
+          cpVelY[i] += (dy / dist) * strength;
+        }
+
+        // Damping + apply
+        cpVelX[i] *= DAMPING;
+        cpVelY[i] *= DAMPING;
+        cpVelZ[i] *= DAMPING;
+        sp.position.x += cpVelX[i];
+        sp.position.y += cpVelY[i];
+        sp.position.z += cpVelZ[i];
+      }
+
+      // Smooth camera parallax
+      camTarget.x += (mouseRef.current.x * 0.8 - camTarget.x) * 0.05;
+      camTarget.y += (mouseRef.current.y * 0.35 - camTarget.y) * 0.05;
       camera.position.x = camTarget.x;
-      camera.position.y = 2 + camTarget.y;
+      camera.position.y = 1.5 + camTarget.y;
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
@@ -155,14 +292,11 @@ export default function Hero() {
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", onResize);
       renderer.dispose();
-      torusGeo.dispose();
-      torusMat.dispose();
-      outerGeo.dispose();
-      outerMat.dispose();
-      ringGeo.dispose();
-      ringMat.dispose();
-      particleGeo.dispose();
-      particleMat.dispose();
+      geos.forEach((g) => g.dispose());
+      mats.forEach((m) => m.dispose());
+      scene.remove(mobiusGroup);
+      cpSpriteMats.forEach((m) => m.dispose());
+      tokenTexList.forEach((t) => t.dispose());
     };
   }, []);
 
@@ -174,7 +308,7 @@ export default function Hero() {
       {/* Bottom fade into next section */}
       <div className="absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-t from-[#04040f] to-transparent pointer-events-none" />
 
-      {/* Dark backdrop behind text for readability */}
+      {/* Dark backdrop behind text */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -185,7 +319,7 @@ export default function Hero() {
 
       {/* Content overlay */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-        {/* Eyebrow label */}
+        {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -195,13 +329,16 @@ export default function Hero() {
           Game Programmer · Software Engineer
         </motion.p>
 
-        {/* Main heading */}
+        {/* Name */}
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="font-space font-bold leading-[0.9] tracking-tight mb-6 gradient-text"
-          style={{ fontSize: "clamp(3.2rem, 10vw, 8.5rem)", filter: "drop-shadow(0 2px 24px rgba(0,0,0,0.95))" }}
+          style={{
+            fontSize: "clamp(3.2rem, 10vw, 8.5rem)",
+            filter: "drop-shadow(0 2px 24px rgba(0,0,0,0.95))",
+          }}
         >
           Jacob Fernandez
         </motion.h1>
@@ -229,8 +366,6 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 1.0 }}
           className="flex flex-col items-center gap-4"
         >
-          {/* Top row — 3 outline buttons */}
-          {/* On mobile: LinkedIn + GitHub pair on row 1, Download Resume centers on row 2 */}
           <div className="flex flex-wrap justify-center gap-3">
             <a
               href="https://linkedin.com/in/JacobFernandezProgrammer"
@@ -263,7 +398,6 @@ export default function Hero() {
             </a>
           </div>
 
-          {/* Bottom row — View Projects CTA */}
           <a
             href="#projects"
             className="px-10 py-3.5 rounded-full text-sm font-semibold tracking-wide text-black transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
@@ -290,10 +424,7 @@ export default function Hero() {
             animate={{ scaleY: [1, 0.4, 1], opacity: [0.8, 0.2, 0.8] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             className="w-px h-10 origin-top"
-            style={{
-              background:
-                "linear-gradient(to bottom, #00d4ff, transparent)",
-            }}
+            style={{ background: "linear-gradient(to bottom, #00d4ff, transparent)" }}
           />
         </motion.div>
       </div>
