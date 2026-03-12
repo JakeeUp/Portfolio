@@ -122,8 +122,11 @@ export default function Hero() {
       tokenTexList.push(tex);
     });
 
-    // Möbius strip in XY plane, centered in scene
-    const MB_CX = 0.0, MB_CY = 0.0, MB_R = 3.6, MB_W = 1.2;
+    // Möbius strip in XY plane, centered in scene — responsive sizing
+    const isMobile = window.innerWidth < 768;
+    const MB_CX = 0.0, MB_CY = 0.0;
+    const MB_R = isMobile ? 1.9 : 3.6;
+    const MB_W = isMobile ? 0.6 : 1.2;
 
     function mobiusHome(t: number, s: number): THREE.Vector3 {
       // Ring lies in XY plane — faces the camera nicely
@@ -142,7 +145,7 @@ export default function Hero() {
     const cpSpriteMats: THREE.SpriteMaterial[] = [];
     const cpVelX: number[] = [], cpVelY: number[] = [], cpVelZ: number[] = [];
     const cpT: number[] = [], cpS: number[] = [], cpTSpeed: number[] = [];
-    const CP_COUNT = 500;
+    const CP_COUNT = isMobile ? 200 : 500;
 
     for (let i = 0; i < CP_COUNT; i++) {
       const tParam = (i / CP_COUNT) * Math.PI * 2;
@@ -159,7 +162,7 @@ export default function Hero() {
       cpSpriteMats.push(spMat);
 
       const sp = new THREE.Sprite(spMat);
-      sp.scale.set(1.5, 0.40, 1);
+      sp.scale.set(isMobile ? 0.9 : 1.5, isMobile ? 0.24 : 0.40, 1);
       sp.position.copy(mobiusHome(tParam, sParam));
       mobiusGroup.add(sp);
 
