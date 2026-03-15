@@ -29,6 +29,29 @@ export const metadata: Metadata = {
     "Jacob Fernandez",
     "San Antonio",
   ],
+  openGraph: {
+    title: "Jacob Fernandez | Game Programmer",
+    description:
+      "Game Programmer & Software Engineer specializing in C++, Unreal Engine 5, Unity, and OpenGL.",
+    url: "https://jacobfernandezdev.vercel.app",
+    siteName: "Jacob Fernandez",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Jacob Fernandez — Game Programmer & Software Engineer",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jacob Fernandez | Game Programmer",
+    description:
+      "Game Programmer & Software Engineer specializing in C++, Unreal Engine 5, Unity, and OpenGL.",
+    images: ["/opengraph-image.png"],
+  },
 };
 
 export default function RootLayout({
