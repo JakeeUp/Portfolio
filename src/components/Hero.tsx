@@ -14,6 +14,8 @@ export default function Hero() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const isMobile = window.innerWidth < 768;
+
     // ─── Scene ────────────────────────────────────────────────
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x04040f, 0.015);
@@ -27,10 +29,17 @@ export default function Hero() {
     );
     camera.position.set(0, 1.5, 10);
 
-    // ─── Renderer ────────────────────────────────────────────
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    // ─── Renderer ─────────────────────────────────────────────
+    // antialias off on mobile: halves GPU fill-rate cost.
+    // powerPreference: GPU scheduler hint for sustained perf.
+    // Pixel ratio capped at 1.5 on mobile (vs 2) — biggest single GPU win.
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: !isMobile,
+      powerPreference: "high-performance",
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
     renderer.setClearColor(0x04040f);
 
     // Track for cleanup
@@ -39,11 +48,8 @@ export default function Hero() {
 
     // ─────────────────────────────────────────────────────────
     // CODE PARTICLE MÖBIUS STRIP
-    // Snippets from Jacob's C++/C#/Python/TS projects orbit a
-    // Möbius strip and scatter when the mouse gets close.
     // ─────────────────────────────────────────────────────────
 
-    // Real tokens from Jacob's C#/C++/JS/TS projects
     const CODE_TOKENS = [
       // Unity C# — PlayerController
       'Rigidbody', 'Vector3', 'Quaternion', '[Header]', 'moveSpeed',
@@ -104,9 +110,7 @@ export default function Hero() {
       cv.width = 256; cv.height = 64;
       const ctx2 = cv.getContext('2d')!;
       ctx2.clearRect(0, 0, 256, 64);
-      // Vary between bright cyan and softer blue-purple
       const col = Math.random() > 0.55 ? '#00d4ff' : Math.random() > 0.5 ? '#4499ff' : '#aa88ff';
-      // Subtle dark bg so text is legible against bright scene
       ctx2.fillStyle = 'rgba(0,0,0,0.18)';
       ctx2.roundRect(4, 8, 248, 48, 6);
       ctx2.fill();
@@ -122,25 +126,16 @@ export default function Hero() {
       tokenTexList.push(tex);
     });
 
-    // Möbius strip in XY plane, centered in scene — responsive sizing
-    const isMobile = window.innerWidth < 768;
+    // Möbius strip params
     const MB_CX = 0.0, MB_CY = 0.0;
     const MB_R = isMobile ? 1.9 : 3.6;
     const MB_W = isMobile ? 0.6 : 1.2;
-
-    function mobiusHome(t: number, s: number): THREE.Vector3 {
-      // Ring lies in XY plane — faces the camera nicely
-      const x = (MB_R + s * Math.cos(t / 2)) * Math.cos(t) + MB_CX;
-      const y = (MB_R + s * Math.cos(t / 2)) * Math.sin(t) + MB_CY;
-      const z = s * Math.sin(t / 2);
-      return new THREE.Vector3(x, y, z);
-    }
 
     // Group so we can spin the whole strip
     const mobiusGroup = new THREE.Group();
     scene.add(mobiusGroup);
 
-    // Particle arrays
+    // Particle arrays — flat typed arrays for better cache locality
     const cpSprites: THREE.Sprite[] = [];
     const cpSpriteMats: THREE.SpriteMaterial[] = [];
     const cpVelX: number[] = [], cpVelY: number[] = [], cpVelZ: number[] = [];
@@ -150,6 +145,15 @@ export default function Hero() {
     for (let i = 0; i < CP_COUNT; i++) {
       const tParam = (i / CP_COUNT) * Math.PI * 2;
       const sParam = (Math.random() - 0.5) * MB_W * 2;
+
+      // Inline mobiusHome — no THREE.Vector3 allocation
+      const ct2 = Math.cos(tParam / 2);
+      const st2 = Math.sin(tParam / 2);
+      const rsi = MB_R + sParam * ct2;
+      const hx = rsi * Math.cos(tParam) + MB_CX;
+      const hy = rsi * Math.sin(tParam) + MB_CY;
+      const hz = sParam * st2;
+
       const tok = CODE_TOKENS[i % CODE_TOKENS.length];
       const tex = tokenTexMap.get(tok)!;
 
@@ -163,7 +167,7 @@ export default function Hero() {
 
       const sp = new THREE.Sprite(spMat);
       sp.scale.set(isMobile ? 0.9 : 1.5, isMobile ? 0.24 : 0.40, 1);
-      sp.position.copy(mobiusHome(tParam, sParam));
+      sp.position.set(hx, hy, hz);
       mobiusGroup.add(sp);
 
       cpSprites.push(sp);
@@ -173,12 +177,12 @@ export default function Hero() {
       cpTSpeed.push(0.7 + Math.random() * 0.6);
     }
 
-    // ─── Ground grid ─────────────────────────────────────────
+    // ─── Ground grid ──────────────────────────────────────────
     const grid = new THREE.GridHelper(60, 60, 0x0a1a30, 0x05101e);
     grid.position.y = -2.8;
     scene.add(grid);
 
-    // ─── Particles ───────────────────────────────────────────
+    // ─── Background particles ─────────────────────────────────
     const count = 1600;
     const pPositions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -202,73 +206,91 @@ export default function Hero() {
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // ─── Mouse / Touch tracking ───────────────────────────────
+    // ─── Event listeners ──────────────────────────────────────
     const onMouseMove = (e: MouseEvent) => {
       mouseRef.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
       mouseRef.current.y = -(e.clientY / window.innerHeight - 0.5) * 1.5;
     };
     window.addEventListener("mousemove", onMouseMove, { passive: true });
 
+    // Throttled touchmove — skip frames on mobile to stay off the scroll thread
+    let lastTouchTs = 0;
     const onTouchMove = (e: TouchEvent) => {
+      const now = performance.now();
+      if (now - lastTouchTs < 32) return; // ~30 Hz
+      lastTouchTs = now;
       const touch = e.touches[0];
       mouseRef.current.x = (touch.clientX / window.innerWidth - 0.5) * 2;
       mouseRef.current.y = -(touch.clientY / window.innerHeight - 0.5) * 1.5;
     };
     window.addEventListener("touchmove", onTouchMove, { passive: true });
 
-    // ─── Resize ──────────────────────────────────────────────
     const onResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
     };
     window.addEventListener("resize", onResize, { passive: true });
 
     // ─── Animation loop ───────────────────────────────────────
+    // Hoist loop constants outside the hot path
+    const REPEL_RADIUS    = 2.2;
+    const REPEL_RADIUS_SQ = REPEL_RADIUS * REPEL_RADIUS; // avoid sqrt when not needed
+    const SPRING          = 0.032;
+    const DAMPING         = 0.87;
+    const ORBIT_SPEED     = 0.0018;
+
     let raf: number;
+    let isHeroVisible = true;
     const camTarget = { x: 0, y: 0 };
     const clock = new THREE.Clock();
 
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
 
+      // Skip render when hero scrolled out of view or tab is hidden — free CPU/GPU
+      if (!isHeroVisible || document.hidden) return;
+
+      const t = clock.getElapsedTime();
       particles.rotation.y = t * 0.012;
 
-      // Code particles — orbit Möbius strip, scatter on mouse hover
-      // Approximate mouse position in world space at z≈0
       const mwx = mouseRef.current.x * 6.5;
       const mwy = mouseRef.current.y * 3.5;
-      const REPEL_RADIUS = 2.2;
-      const SPRING = 0.032;
-      const DAMPING = 0.87;
-      const ORBIT_SPEED = 0.0018;
 
       for (let i = 0; i < CP_COUNT; i++) {
-        // Advance t along the strip (continuous orbit)
         cpT[i] += ORBIT_SPEED * cpTSpeed[i];
 
-        // Compute current home target on the moving strip
-        const home = mobiusHome(cpT[i], cpS[i]);
+        // Inline mobiusHome — zero allocations per frame
+        const ti = cpT[i];
+        const si = cpS[i];
+        const ct2 = Math.cos(ti / 2);
+        const rsi = MB_R + si * ct2;
+        const homeX = rsi * Math.cos(ti) + MB_CX;
+        const homeY = rsi * Math.sin(ti) + MB_CY;
+        const homeZ = si * Math.sin(ti / 2);
+
         const sp = cpSprites[i];
+        const px = sp.position.x;
+        const py = sp.position.y;
+        const pz = sp.position.z;
 
         // Spring toward home
-        cpVelX[i] += (home.x - sp.position.x) * SPRING;
-        cpVelY[i] += (home.y - sp.position.y) * SPRING;
-        cpVelZ[i] += (home.z - sp.position.z) * SPRING;
+        cpVelX[i] += (homeX - px) * SPRING;
+        cpVelY[i] += (homeY - py) * SPRING;
+        cpVelZ[i] += (homeZ - pz) * SPRING;
 
-        // Mouse repulsion
-        const dx = sp.position.x - mwx;
-        const dy = sp.position.y - mwy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < REPEL_RADIUS && dist > 0.01) {
+        // Mouse repulsion — squared distance avoids sqrt for the common case
+        const dx = px - mwx;
+        const dy = py - mwy;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < REPEL_RADIUS_SQ && distSq > 0.0001) {
+          const dist = Math.sqrt(distSq); // only paid when actually inside radius
           const strength = ((REPEL_RADIUS - dist) / REPEL_RADIUS) * 0.45;
           cpVelX[i] += (dx / dist) * strength;
           cpVelY[i] += (dy / dist) * strength;
         }
 
-        // Damping + apply
         cpVelX[i] *= DAMPING;
         cpVelY[i] *= DAMPING;
         cpVelZ[i] *= DAMPING;
@@ -286,11 +308,20 @@ export default function Hero() {
 
       renderer.render(scene, camera);
     };
+
+    // Pause rendering when hero is not in viewport — saves GPU when user scrolls down
+    const observer = new IntersectionObserver(
+      (entries) => { isHeroVisible = entries[0].isIntersecting; },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
     animate();
 
-    // ─── Cleanup ─────────────────────────────────────────────
+    // ─── Cleanup ──────────────────────────────────────────────
     return () => {
       cancelAnimationFrame(raf);
+      observer.disconnect();
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", onResize);

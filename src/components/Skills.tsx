@@ -96,8 +96,7 @@ function SkillCard({ skill, index }: { skill: Skill; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      whileHover={{ y: -5, scale: 1.04 }}
-      className="glow-card flex flex-col items-center gap-3 p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:border-[#00d4ff]/25 hover:bg-white/[0.04] transition-colors duration-300 cursor-default"
+      className="glow-card flex flex-col items-center gap-3 p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:border-[#00d4ff]/25 hover:bg-white/[0.04] hover:-translate-y-[5px] hover:scale-[1.04] transition-all duration-200 cursor-default"
     >
       <div style={{ color: skill.color }} className="text-3xl">
         <Icon />

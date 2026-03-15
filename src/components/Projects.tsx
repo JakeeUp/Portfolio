@@ -109,8 +109,7 @@ export default function Projects() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.65, delay: i * 0.15 }}
-                whileHover={{ y: -7 }}
-                className="group glow-card rounded-2xl p-6 border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] transition-all duration-300 flex flex-col relative overflow-hidden"
+                className="group glow-card rounded-2xl p-6 border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:-translate-y-[7px] transition-all duration-300 flex flex-col relative overflow-hidden"
               >
                 {/* Background glow */}
                 <div

@@ -20,6 +20,23 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent momentum-scroll jank on iOS */
+  overscroll-behavior-y: none;
+}
+
+/* Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Fast tap response on mobile — removes 300ms click delay */
+button, a {
+  touch-action: manipulation;
 }
 
 /* Custom scrollbar */
@@ -60,6 +77,12 @@ button {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* CSS containment — tells the browser each section is a self-contained paint
+   boundary, so repaints in one section don't invalidate others */
+section {
+  contain: layout style;
 }
 
 /* Glow card utility */
