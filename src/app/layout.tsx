@@ -61,7 +61,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
-      <body>{children}</body>
+      <body>
+        {/* Black overlay that fades out after load — hides Three.js/font init */}
+        <div id="page-loader" aria-hidden="true" />
+        {children}
+      </body>
     </html>
   );
 }

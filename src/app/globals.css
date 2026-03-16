@@ -24,6 +24,21 @@ body {
   overscroll-behavior-y: none;
 }
 
+/* Page load fade-in overlay — hides layout/Three.js init jank */
+@keyframes pageReveal {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+#page-loader {
+  position: fixed;
+  inset: 0;
+  background: #04040f;
+  z-index: 99999;
+  pointer-events: none;
+  /* 0.5s hold (covers Three.js init), then 0.7s fade out */
+  animation: pageReveal 0.7s ease-out 0.5s both;
+}
+
 /* Respect user's reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
