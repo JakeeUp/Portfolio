@@ -243,6 +243,7 @@ export default function Hero() {
 
     let raf: number;
     let isHeroVisible = true;
+    let firstFrame = true;
     const camTarget = { x: 0, y: 0 };
     const clock = new THREE.Clock();
 
@@ -307,6 +308,12 @@ export default function Hero() {
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
+
+      // Signal the PageLoader to fade out on first completed frame
+      if (firstFrame) {
+        firstFrame = false;
+        window.dispatchEvent(new Event("hero-ready"));
+      }
     };
 
     // Pause rendering when hero is not in viewport — saves GPU when user scrolls down

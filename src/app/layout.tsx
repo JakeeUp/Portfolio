@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import PageLoader from "@/components/PageLoader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -62,8 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body>
-        {/* Black overlay that fades out after load — hides Three.js/font init */}
-        <div id="page-loader" aria-hidden="true" />
+        <PageLoader />
         {children}
       </body>
     </html>
