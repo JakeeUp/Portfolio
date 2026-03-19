@@ -347,7 +347,7 @@ export default function Hero() {
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
       {/* Bottom fade into next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-t from-[#04040f] to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-[#04040f] via-[#04040f]/60 to-transparent pointer-events-none" />
 
       {/* Dark backdrop behind text */}
       <div

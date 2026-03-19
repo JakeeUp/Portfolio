@@ -113,7 +113,7 @@ export default function Skills() {
     <section
       id="skills"
       className="py-32 px-6"
-      style={{ background: "rgba(6,6,18,0.6)" }}
+      style={{ background: "linear-gradient(to bottom, transparent, rgba(6,6,18,0.6) 15%, rgba(6,6,18,0.6) 85%, transparent)" }}
     >
       <div className="max-w-7xl mx-auto">
         <motion.p
