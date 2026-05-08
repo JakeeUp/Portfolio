@@ -100,7 +100,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       />
 
       {/* Video thumbnail */}
-      <div className="relative w-full aspect-video overflow-hidden rounded-t-2xl bg-black/60">
+      <div className="relative w-full overflow-hidden rounded-t-2xl bg-black/60" style={{ aspectRatio: "16/11" }}>
         <video
           ref={videoRef}
           src={project.videoSrc}
@@ -147,24 +147,24 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       </div>
 
       {/* Card body */}
-      <div className="flex flex-col flex-1 p-6 relative">
-        <p className="text-[#8892a4] text-xs font-mono mb-1">{project.subtitle}</p>
+      <div className="flex flex-col flex-1 p-8 relative">
+        <p className="text-[#8892a4] text-sm font-mono mb-1.5">{project.subtitle}</p>
         <h3
-          className="font-space font-semibold text-xl text-white mb-3 transition-colors duration-200"
+          className="font-space font-semibold text-3xl text-white mb-4 transition-colors duration-200"
           style={{ color: hovered ? project.accentColor : "white" }}
         >
           {project.title}
         </h3>
-        <p className="text-[#8892a4] text-sm leading-relaxed mb-5 flex-1">
+        <p className="text-[#8892a4] text-base leading-relaxed mb-6 flex-1">
           {project.description}
         </p>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-5">
+        <div className="flex flex-wrap gap-2 mb-6">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="px-2.5 py-1 rounded-md text-[11px] font-mono text-[#8892a4] border border-white/[0.06] bg-white/[0.02]"
+              className="px-3 py-1.5 rounded-md text-xs font-mono text-[#8892a4] border border-white/[0.06] bg-white/[0.02]"
             >
               {tag}
             </span>
@@ -198,7 +198,7 @@ export default function Projects() {
           "linear-gradient(to bottom, transparent, rgba(6,6,18,0.6) 15%, rgba(6,6,18,0.6) 85%, transparent)",
       }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1600px] mx-auto">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -227,7 +227,7 @@ export default function Projects() {
           spanning real-time rendering, Unity, and Unreal Engine 5.
         </motion.p>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-10">
           {projects.map((project, i) => (
             <ProjectCard key={project.title} project={project} index={i} />
           ))}
