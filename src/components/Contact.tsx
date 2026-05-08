@@ -57,7 +57,7 @@ export default function Contact() {
           viewport={{ once: true }}
           className="text-[#00d4ff] text-[11px] font-mono tracking-[0.4em] uppercase mb-3"
         >
-          08 / Contact
+          09 / Contact
         </motion.p>
 
         <motion.h2

@@ -46,7 +46,7 @@ export default function Reel() {
           viewport={{ once: true }}
           className="text-[#00d4ff] text-[11px] font-mono tracking-[0.4em] uppercase mb-3"
         >
-          05 / Reel &amp; Media
+          03 / Reel &amp; Media
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}

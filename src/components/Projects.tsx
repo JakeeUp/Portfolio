@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FiLayers, FiCpu, FiZap } from "react-icons/fi";
-import type { IconType } from "react-icons";
+import { useRef, useState, useCallback } from "react";
+import { FiGithub, FiExternalLink, FiMaximize2 } from "react-icons/fi";
 
 interface Project {
   title: string;
@@ -11,8 +11,9 @@ interface Project {
   tags: string[];
   status: "Completed" | "In Progress";
   highlight?: string;
-  icon: IconType;
   accentColor: string;
+  videoSrc: string;
+  github: string;
 }
 
 const projects: Project[] = [
@@ -20,32 +21,34 @@ const projects: Project[] = [
     title: "OpenGL Graphics Engine",
     subtitle: "Graphics / Systems Programming",
     description:
-      "Custom graphics engine developed in a collaborative team environment, implementing a complete rendering pipeline with vertex and fragment shader systems. Demonstrates low-level GPU architecture, buffer management, and real-time rendering techniques.",
-    tags: ["C++", "OpenGL", "GLSL", "Shaders", "Rendering Pipeline", "VBOs"],
+      "Custom graphics engine built in C++ with a complete rendering pipeline, vertex and fragment shader systems, real-time GPU buffer management, and low-level OpenGL architecture.",
+    tags: ["C++", "OpenGL", "GLSL", "Shaders", "VBOs", "Rendering Pipeline"],
     status: "Completed",
-    icon: FiLayers,
     accentColor: "#5586A4",
+    videoSrc: "/videos/OpenGLProject.mp4",
+    github: "https://github.com/JakeeUp/Engine_OpenGLProject",
   },
   {
-    title: "Turn-Based Horror Game",
+    title: "Metal Gear Mechanics Clone",
+    subtitle: "Game Development · Unity",
+    description:
+      "Faithful recreation of Metal Gear Solid stealth systems in Unity, featuring enemy AI with detection cones, alert states, cover mechanics, and CQC combat built from the ground up in C#.",
+    tags: ["C#", "Unity", "AI Systems", "Stealth", "Animation", "Physics"],
+    status: "Completed",
+    accentColor: "#7c3aed",
+    videoSrc: "/videos/MGS_Clone.mp4",
+    github: "https://github.com/JakeeUp/MetalGearMechanics_Unity",
+  },
+  {
+    title: "Hack & Slash Combat System",
     subtitle: "Game Development · UE5",
     description:
-      "Currently in production for the Summer 2026 semester. A atmospheric turn-based horror title with complex AI decision trees, procedural tension systems, and scalable gameplay architecture. Focus on technical design and system-level programming.",
-    tags: ["C++", "Unreal Engine 5", "Blueprint", "AI Systems", "Gameplay"],
-    status: "In Progress",
-    highlight: "Summer 2026",
-    icon: FiCpu,
-    accentColor: "#7c3aed",
-  },
-  {
-    title: "Hero-Based Prototype",
-    subtitle: "Game Development · Full Cycle",
-    description:
-      "End-to-end development from initial concept to a fully playable build. Features hero mechanics, an ability system, responsive controls, and polished gameplay, demonstrating a complete production pipeline and strong software engineering fundamentals.",
-    tags: ["C++", "UE5", "Gameplay Ability System", "Blueprint", "Animation"],
+      "Fluid hack-and-slash combat prototype in Unreal Engine 5 featuring combo chains, directional attacks, enemy hit reactions, hitbox management, and polished feel through animation blueprints.",
+    tags: ["C++", "UE5", "Blueprint", "Gameplay Ability System", "Animation"],
     status: "Completed",
-    icon: FiZap,
     accentColor: "#00d4ff",
+    videoSrc: "/videos/HackNSlash.mp4",
+    github: "https://github.com/JakeeUp/HackAndSlash-Combat-System",
   },
 ];
 
@@ -62,12 +65,138 @@ const statusConfig = {
   },
 };
 
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hovered, setHovered] = useState(false);
+  const status = statusConfig[project.status];
+
+  const handleFullscreen = useCallback(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    if (el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if ((el as HTMLVideoElement & { webkitRequestFullscreen?: () => void }).webkitRequestFullscreen) {
+      (el as HTMLVideoElement & { webkitRequestFullscreen: () => void }).webkitRequestFullscreen();
+    }
+  }, []);
+
+  return (
+    <motion.div
+      key={project.title}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.65, delay: index * 0.15 }}
+      className="group glow-card rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:-translate-y-[7px] transition-all duration-300 flex flex-col relative overflow-hidden"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Background glow on hover */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500 opacity-0 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(ellipse at top right, ${project.accentColor}10 0%, transparent 60%)`,
+        }}
+      />
+
+      {/* Video thumbnail */}
+      <div className="relative w-full aspect-video overflow-hidden rounded-t-2xl bg-black/60">
+        <video
+          ref={videoRef}
+          src={project.videoSrc}
+          autoPlay
+          muted
+          loop
+          playsInline
+          onClick={handleFullscreen}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03] cursor-pointer"
+        />
+        {/* Accent gradient overlay at bottom of video */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none"
+          style={{
+            background: `linear-gradient(to top, ${project.accentColor}22, transparent)`,
+          }}
+        />
+        {/* Fullscreen button — appears on hover */}
+        <button
+          onClick={handleFullscreen}
+          aria-label="View fullscreen"
+          className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono text-white backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          style={{
+            background: "rgba(0,0,0,0.55)",
+            border: `1px solid ${project.accentColor}40`,
+          }}
+        >
+          <FiMaximize2 className="text-sm" style={{ color: project.accentColor }} />
+          Fullscreen
+        </button>
+        {/* Status badge over video */}
+        <div className="absolute top-3 right-3">
+          <span
+            className="px-2.5 py-1 rounded-full text-xs font-mono backdrop-blur-sm"
+            style={{
+              background: status.bg,
+              border: `1px solid ${status.border}`,
+              color: status.text,
+            }}
+          >
+            {project.status}
+          </span>
+        </div>
+      </div>
+
+      {/* Card body */}
+      <div className="flex flex-col flex-1 p-6 relative">
+        <p className="text-[#8892a4] text-xs font-mono mb-1">{project.subtitle}</p>
+        <h3
+          className="font-space font-semibold text-xl text-white mb-3 transition-colors duration-200"
+          style={{ color: hovered ? project.accentColor : "white" }}
+        >
+          {project.title}
+        </h3>
+        <p className="text-[#8892a4] text-sm leading-relaxed mb-5 flex-1">
+          {project.description}
+        </p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="px-2.5 py-1 rounded-md text-[11px] font-mono text-[#8892a4] border border-white/[0.06] bg-white/[0.02]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* GitHub link */}
+        <a
+          href={project.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-xs font-mono transition-colors duration-200 w-fit group/link"
+          style={{ color: project.accentColor }}
+        >
+          <FiGithub className="text-base" />
+          <span className="group-hover/link:underline">View on GitHub</span>
+          <FiExternalLink className="text-xs opacity-60" />
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Projects() {
   return (
     <section
       id="projects"
       className="py-32 px-6"
-      style={{ background: "linear-gradient(to bottom, transparent, rgba(6,6,18,0.6) 15%, rgba(6,6,18,0.6) 85%, transparent)" }}
+      style={{
+        background:
+          "linear-gradient(to bottom, transparent, rgba(6,6,18,0.6) 15%, rgba(6,6,18,0.6) 85%, transparent)",
+      }}
     >
       <div className="max-w-7xl mx-auto">
         <motion.p
@@ -76,7 +205,7 @@ export default function Projects() {
           viewport={{ once: true }}
           className="text-[#00d4ff] text-[11px] font-mono tracking-[0.4em] uppercase mb-3"
         >
-          06 / Projects
+          02 / Projects
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -94,91 +223,14 @@ export default function Projects() {
           transition={{ delay: 0.2 }}
           className="text-[#8892a4] text-lg mb-16 max-w-2xl"
         >
-          From graphics engines to production games, selected projects from my
-          MFA program and personal development.
+          From graphics engines to stealth AI and combat systems — projects
+          spanning real-time rendering, Unity, and Unreal Engine 5.
         </motion.p>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {projects.map((project, i) => {
-            const Icon = project.icon;
-            const status = statusConfig[project.status];
-            return (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.65, delay: i * 0.15 }}
-                className="group glow-card rounded-2xl p-6 border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:-translate-y-[7px] transition-all duration-300 flex flex-col relative overflow-hidden"
-              >
-                {/* Background glow */}
-                <div
-                  className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    background: `radial-gradient(circle, ${project.accentColor}15 0%, transparent 70%)`,
-                  }}
-                />
-
-                {/* Icon + Status */}
-                <div className="flex items-start justify-between mb-6 relative">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center border"
-                    style={{
-                      borderColor: `${project.accentColor}30`,
-                      background: `${project.accentColor}10`,
-                    }}
-                  >
-                    <Icon
-                      className="text-xl"
-                      style={{ color: project.accentColor }}
-                    />
-                  </div>
-                  <div className="flex flex-col items-end gap-1.5">
-                    <span
-                      className="px-2.5 py-1 rounded-full text-xs font-mono"
-                      style={{
-                        background: status.bg,
-                        border: `1px solid ${status.border}`,
-                        color: status.text,
-                      }}
-                    >
-                      {project.status}
-                    </span>
-                    {project.highlight && (
-                      <span className="text-[#8892a4] text-[11px] font-mono">
-                        {project.highlight}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Title */}
-                <p className="text-[#8892a4] text-xs font-mono mb-1 relative">
-                  {project.subtitle}
-                </p>
-                <h3 className="font-space font-semibold text-xl text-white mb-3 group-hover:text-[#00d4ff] transition-colors duration-200 relative">
-                  {project.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-[#8892a4] text-sm leading-relaxed mb-5 flex-1 relative">
-                  {project.description}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mt-auto relative">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2.5 py-1 rounded-md text-[11px] font-mono text-[#8892a4] border border-white/[0.06] bg-white/[0.02]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })}
+          {projects.map((project, i) => (
+            <ProjectCard key={project.title} project={project} index={i} />
+          ))}
         </div>
       </div>
     </section>

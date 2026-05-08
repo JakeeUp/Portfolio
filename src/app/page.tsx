@@ -22,12 +22,12 @@ export default function Home() {
       <GradientOrbs />
       <Navbar />
       <Hero />
-      <About />
-      <Experience />
-      <Skills />
-      <GitHubSection />
-      <Reel />
       <Projects />
+      <Reel />
+      <Skills />
+      <Experience />
+      <GitHubSection />
+      <About />
       <Education />
       <Contact />
       <Footer />
