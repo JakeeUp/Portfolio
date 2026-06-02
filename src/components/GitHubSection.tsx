@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { SiGithub } from "react-icons/si";
 import { FiExternalLink, FiStar, FiCode } from "react-icons/fi";
@@ -80,10 +81,11 @@ export default function GitHubSection() {
           >
             {/* Avatar */}
             <div className="relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={`https://github.com/${GITHUB_USERNAME}.png`}
                 alt="Jacob Fernandez GitHub avatar"
+                width={96}
+                height={96}
                 className="w-24 h-24 rounded-full border-2 border-[#00d4ff]/30"
               />
               <div

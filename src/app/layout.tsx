@@ -17,6 +17,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.jacobfernandez.dev"),
   title: "Jacob Fernandez | Game Programmer",
   description:
     "Game Programmer & Software Engineer specializing in C++, Unreal Engine 5, Unity, and OpenGL. MFA candidate at the University of the Incarnate Word.",
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     title: "Jacob Fernandez | Game Programmer",
     description:
       "Game Programmer & Software Engineer specializing in C++, Unreal Engine 5, Unity, and OpenGL.",
-    url: "https://jacobfernandezdev.vercel.app",
+    url: "https://www.jacobfernandez.dev",
     siteName: "Jacob Fernandez",
     images: [
       {
@@ -62,6 +63,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+      <head>
+        {/* Speed up the Vimeo reel embed by warming up the connection early */}
+        <link rel="preconnect" href="https://player.vimeo.com" />
+        <link rel="preconnect" href="https://i.vimeocdn.com" />
+        <link rel="preconnect" href="https://f.vimeocdn.com" />
+        {/* Prefetch the resume so Download Resume is instant on click */}
+        <link rel="prefetch" href="/resume.pdf" as="document" />
+      </head>
       <body>
         <PageLoader />
         {children}
