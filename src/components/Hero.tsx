@@ -15,6 +15,9 @@ export default function Hero() {
     if (!canvas) return;
 
     const isMobile = window.innerWidth < 768;
+    const isEdge = /Edg\//.test(navigator.userAgent);
+    // Edge has slower WebGL sprite batching — treat it like mobile for quality settings
+    const isLowPower = isMobile || isEdge;
 
     // ─── Scene ────────────────────────────────────────────────
     const scene = new THREE.Scene();
@@ -35,11 +38,11 @@ export default function Hero() {
     // Pixel ratio capped at 1.5 on mobile (vs 2) — biggest single GPU win.
     const renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: !isMobile,
+      antialias: !isLowPower,
       powerPreference: "high-performance",
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setClearColor(0x04040f);
 
     // Track for cleanup
@@ -140,7 +143,7 @@ export default function Hero() {
     const cpSpriteMats: THREE.SpriteMaterial[] = [];
     const cpVelX: number[] = [], cpVelY: number[] = [], cpVelZ: number[] = [];
     const cpT: number[] = [], cpS: number[] = [], cpTSpeed: number[] = [];
-    const CP_COUNT = isMobile ? 200 : 500;
+    const CP_COUNT = isMobile ? 180 : isEdge ? 250 : 350;
 
     for (let i = 0; i < CP_COUNT; i++) {
       const tParam = (i / CP_COUNT) * Math.PI * 2;
@@ -183,7 +186,7 @@ export default function Hero() {
     scene.add(grid);
 
     // ─── Background particles ─────────────────────────────────
-    const count = 1600;
+    const count = isLowPower ? 700 : 1000;
     const pPositions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       const r = 8 + Math.random() * 18;
@@ -229,7 +232,7 @@ export default function Hero() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     };
     window.addEventListener("resize", onResize, { passive: true });
 
@@ -247,11 +250,19 @@ export default function Hero() {
     const camTarget = { x: 0, y: 0 };
     const clock = new THREE.Clock();
 
-    const animate = () => {
+    // Cap at 60fps — prevents burning GPU at 144Hz on high-refresh monitors
+    const FPS_CAP = 1000 / 60;
+    let lastFrameTime = 0;
+
+    const animate = (now: number = 0) => {
       raf = requestAnimationFrame(animate);
 
       // Skip render when hero scrolled out of view or tab is hidden — free CPU/GPU
       if (!isHeroVisible || document.hidden) return;
+
+      // FPS limiter — skip frame if we're ahead of the 60fps budget
+      if (now - lastFrameTime < FPS_CAP) return;
+      lastFrameTime = now;
 
       const t = clock.getElapsedTime();
       particles.rotation.y = t * 0.012;
