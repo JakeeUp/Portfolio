@@ -10,12 +10,12 @@ const stats = [
 ];
 
 const codeLines = [
-  { tokens: [{ text: "// GameProgrammer.cpp", cls: "text-[#6a9955]" }] },
+  { tokens: [{ text: "// Engineer.cpp", cls: "text-[#6a9955]" }] },
   { tokens: [] },
   {
     tokens: [
       { text: "class ", cls: "text-[#569cd6]" },
-      { text: "GameProgrammer ", cls: "text-[#4ec9b0]" },
+      { text: "Engineer ", cls: "text-[#4ec9b0]" },
       { text: "{", cls: "text-[#d4d4d4]" },
     ],
   },
@@ -43,15 +43,19 @@ const codeLines = [
     tokens: [
       { text: "  vector", cls: "text-[#569cd6]" },
       { text: "<string> ", cls: "text-[#d4d4d4]" },
-      { text: "engines ", cls: "text-[#9cdcfe]" },
+      { text: "languages ", cls: "text-[#9cdcfe]" },
       { text: "= {", cls: "text-[#d4d4d4]" },
     ],
   },
   {
     tokens: [
-      { text: '    "Unreal Engine 5"', cls: "text-[#ce9178]" },
+      { text: '    "C++"', cls: "text-[#ce9178]" },
       { text: ", ", cls: "text-[#d4d4d4]" },
-      { text: '"Unity"', cls: "text-[#ce9178]" },
+      { text: '"C#"', cls: "text-[#ce9178]" },
+      { text: ", ", cls: "text-[#d4d4d4]" },
+      { text: '"Python"', cls: "text-[#ce9178]" },
+      { text: ", ", cls: "text-[#d4d4d4]" },
+      { text: '"TypeScript"', cls: "text-[#ce9178]" },
     ],
   },
   { tokens: [{ text: "  };", cls: "text-[#d4d4d4]" }] },
@@ -66,15 +70,36 @@ const codeLines = [
   },
   {
     tokens: [
-      { text: '    "Gameplay Mechanics"', cls: "text-[#ce9178]" },
+      { text: '    "Gameplay Programming"', cls: "text-[#ce9178]" },
       { text: ",", cls: "text-[#d4d4d4]" },
     ],
   },
   {
     tokens: [
-      { text: '    "AI Programming"', cls: "text-[#ce9178]" },
+      { text: '    "AI Systems"', cls: "text-[#ce9178]" },
+      { text: ", ", cls: "text-[#d4d4d4]" },
+      { text: '"Full-Stack Dev"', cls: "text-[#ce9178]" },
       { text: ", ", cls: "text-[#d4d4d4]" },
       { text: '"REST APIs"', cls: "text-[#ce9178]" },
+    ],
+  },
+  { tokens: [{ text: "  };", cls: "text-[#d4d4d4]" }] },
+  { tokens: [] },
+  {
+    tokens: [
+      { text: "  vector", cls: "text-[#569cd6]" },
+      { text: "<string> ", cls: "text-[#d4d4d4]" },
+      { text: "principles ", cls: "text-[#9cdcfe]" },
+      { text: "= {", cls: "text-[#d4d4d4]" },
+    ],
+  },
+  {
+    tokens: [
+      { text: '    "OOP"', cls: "text-[#ce9178]" },
+      { text: ", ", cls: "text-[#d4d4d4]" },
+      { text: '"Data Structures"', cls: "text-[#ce9178]" },
+      { text: ", ", cls: "text-[#d4d4d4]" },
+      { text: '"System Design"', cls: "text-[#ce9178]" },
     ],
   },
   { tokens: [{ text: "  };", cls: "text-[#d4d4d4]" }] },
@@ -161,16 +186,17 @@ export default function About() {
               variants={fadeUp}
               className="text-[#8892a4] text-lg leading-relaxed mb-12"
             >
-              I specialize in{" "}
-              <span className="text-white font-medium">gameplay programming</span>
-              ,{" "}
-              <span className="text-white font-medium">AI systems</span>
-              , and{" "}
+              My work spans both worlds — from{" "}
+              <span className="text-white font-medium">gameplay systems</span>,
+              AI behavior trees, and engine programming in C++, to{" "}
+              <span className="text-white font-medium">full-stack applications</span>
+              , REST APIs, and clean{" "}
               <span className="text-white font-medium">
-                software engineering
-              </span>{" "}
-              , from complex gameplay frameworks and behavior trees to REST APIs
-              and production-ready C++ systems.
+                object-oriented design
+              </span>
+              . Whether it&apos;s a combat system or a backend service, I focus
+              on solid architecture, efficient data structures, and code that
+              ships.
             </motion.p>
 
             {/* Stats grid */}
@@ -231,7 +257,7 @@ export default function About() {
                 <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
               </div>
               <span className="text-[#8892a4] text-xs ml-2 font-mono">
-                GameProgrammer.cpp
+                Engineer.cpp
               </span>
             </div>
 
