@@ -17,8 +17,8 @@ const contacts: ContactItem[] = [
   {
     icon: FiMail,
     label: "Email",
-    value: "Jacobfernandez0607@yahoo.com",
-    href: "mailto:Jacobfernandez0607@yahoo.com",
+    value: "jacob@jacobfernandez.dev",
+    href: "mailto:jacob@jacobfernandez.dev",
   },
 
   {
@@ -135,7 +135,7 @@ export default function Contact() {
           transition={{ delay: 0.7 }}
         >
           <a
-            href="mailto:Jacobfernandez0607@yahoo.com"
+            href="mailto:jacob@jacobfernandez.dev"
             className="inline-flex items-center gap-3 px-10 py-4 rounded-full font-semibold text-black text-lg transition-all duration-200 hover:scale-105 active:scale-95"
             style={{
               background: "linear-gradient(135deg, #00d4ff 0%, #0066ff 100%)",

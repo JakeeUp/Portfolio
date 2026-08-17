@@ -66,7 +66,7 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <a
-            href="mailto:Jacobfernandez0607@yahoo.com"
+            href="mailto:jacob@jacobfernandez.dev"
             className="hidden md:inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold text-black bg-[#00d4ff] hover:bg-white transition-colors duration-200"
           >
             Hire Me
@@ -124,7 +124,7 @@ export default function Navbar() {
               ))}
 
               <motion.a
-                href="mailto:Jacobfernandez0607@yahoo.com"
+                href="mailto:jacob@jacobfernandez.dev"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
