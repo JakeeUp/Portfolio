@@ -223,7 +223,7 @@ export default function Projects() {
           transition={{ delay: 0.2 }}
           className="text-[#8892a4] text-lg mb-16 max-w-2xl"
         >
-          From graphics engines to stealth AI and combat systems — projects
+          From graphics engines to stealth AI and combat systems. Projects
           spanning real-time rendering, Unity, and Unreal Engine 5.
         </motion.p>
 

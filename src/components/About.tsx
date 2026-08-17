@@ -186,7 +186,7 @@ export default function About() {
               variants={fadeUp}
               className="text-[#8892a4] text-lg leading-relaxed mb-12"
             >
-              My work spans both worlds — from{" "}
+              My work spans both worlds. From{" "}
               <span className="text-white font-medium">gameplay systems</span>,
               AI behavior trees, and engine programming in C++, to{" "}
               <span className="text-white font-medium">full-stack applications</span>

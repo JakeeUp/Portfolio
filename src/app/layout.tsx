@@ -42,7 +42,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image.png",
         width: 1200,
         height: 630,
-        alt: "Jacob Fernandez — Game Programmer & Software Engineer",
+        alt: "Jacob Fernandez, Game Programmer & Software Engineer",
       },
     ],
     type: "website",
